@@ -1,0 +1,108 @@
+body {
+    background: url(https://images.unsplash.com/photo-1502872364588-894d7d6ddfab?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2100&q=80) no-repeat center center fixed;
+    background-color: #232323;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    margin: 0;
+    padding: 0;
+    background-size:100% 100%;
+    font-family: 'Montserrat', sans-serif;
+}
+
+#header {
+    color: white;
+    text-align: center;
+    /* background-color: #232323; */
+    margin-bottom: 3em;
+    padding: 1.0em;
+    border: 0;
+    text-transform: capitalize;
+    font-size: 1.5rem;
+}
+
+button {
+    background: none;
+    border: 1px solid white;
+    color: white;
+    padding: 1em;
+    font-size: .5em;
+    transition: all 0.5s;
+}
+
+button:hover {
+    background-color: white;
+    border: 1px solid black;
+    color: black;
+}
+
+.flex {
+    justify-content: center;
+    display: flex;
+    margin: 0;
+    /* align-content: center */
+}
+
+.gameBox {
+    padding: 4em;
+    margin: 0;
+    color: white;
+    border: 1px solid white;
+    /* border: dotted;
+    border-color: white; */
+}
+
+.gameBox:hover {
+    border: 2px solid cyan;
+}
+
+#box1 {
+    border-left: none;
+    border-top: none;
+    
+}
+
+
+#box2 {
+    border-top: none;
+}
+
+#box3 {
+    border-top: none;
+    border-right: none;
+}
+
+#box4 {
+    border-left: none;
+}
+
+
+#box6 {
+    border-right: none;
+}
+
+#box7 {
+    
+    border-left: none;
+    border-bottom: none;
+}
+
+#box8 {
+    
+    border-bottom: none;
+}
+
+#box9 {
+    border-right: none;
+    border-bottom: none;
+}
+
+
+
+
+/* #strip {
+    color: white;
+    background-color: #232323;
+    text-align: center;
+    margin: 0;
+} */
