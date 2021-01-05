@@ -1,0 +1,109 @@
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  text-transform: capitalize;
+  background: url("images/field.jpg") no-repeat center fixed;
+  background-color: #232323;
+  background-size: cover;
+}
+
+.header {
+  color: white;
+  text-align: center;
+  margin-bottom: 3em;
+  padding: 1em;
+  border: 0;
+  font-family: "Indie Flower", cursive;
+  text-transform: capitalize;
+  font-size: 2rem;
+  text-shadow: black -3px 6px;
+}
+
+button {
+  background: none;
+  border: 1px solid white;
+  color: white;
+  padding: 1em;
+  font-size: 0.5em;
+  text-transform: capitalize;
+  transition: all 0.5s;
+}
+
+button:hover {
+  background-color: white;
+  border: 1px solid black;
+  color: black;
+}
+
+.border {
+  display: flex;
+  justify-content: center;
+}
+
+.flex {
+  height: 400px;
+  width: 50vh;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex-direction: row;
+  align-content: center;
+  margin: 0;
+}
+
+.gameBox {
+  box-sizing: border-box;
+  padding: 4em;
+  margin: 0;
+  color: white;
+  border: 1px solid white;
+}
+
+.gameBox:hover {
+  border: 2px solid cyan;
+}
+
+#box1 {
+  border-left: none;
+  border-top: none;
+}
+
+#box2 {
+  border-top: none;
+}
+
+#box3 {
+  border-top: none;
+  border-right: none;
+}
+
+#box4 {
+  border-left: none;
+}
+
+#box6 {
+  border-right: none;
+}
+
+#box7 {
+  border-left: none;
+  border-bottom: none;
+}
+
+#box8 {
+  border-bottom: none;
+}
+
+#box9 {
+  border-right: none;
+  border-bottom: none;
+}
+
+.space {
+  display: block;
+  height: 5px;
+  width: 5px;
+}
+
+/*# sourceMappingURL=style.css.map */
