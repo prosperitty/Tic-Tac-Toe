@@ -1,67 +1,112 @@
-var startButton = document.querySelector(".startButton");
-var resetButton = document.querySelector(".resetButton");
-var selectBox = document.querySelectorAll(".gameBox");
-var symbols = ["X", "O"];
-var message = document.querySelector(".message");
-var backgroundImage = document.querySelector(".background");
-var players = ["player 1","player 2"];
+const startButton = document.querySelector(".startButton");
+const selectBox = document.querySelectorAll(".grid-box");
+const content = document.querySelectorAll('.content');
+const message = document.querySelector(".message");
 var gameOver = true;
 var turn = true;
-var waves = [1,2,3,4,5,6,7,8,9]
 
 runFunc();
 
 function runFunc(){
-    setButton();
-    playerTurn();
-    reset();  
-}
-
-for(var i = 0; i < selectBox.length; i++){
-    selectBox[i].style.border = "none";
+    setButton(); 
 }
 
 function setButton() {
     if(gameOver){
         startButton.addEventListener("click", function(){
-            message.innerHTML = players[0];
-            backgroundImage.style.background= "#232323";;
+            console.log('test');
             for(var i = 0; i < selectBox.length; i++){
-                selectBox[i].style.border = "";
-                selectBox[i].style.transition = "0.1s";
+                selectBox[i].style.visibility = 'visible';
+                selectBox[i].style.transition = '0.6s';
             }
             gameOver = false;
         }); 
     }
 }
 
-function playerTurn() {;
-    for(var i = 0; i < selectBox.length; i++){
-        selectBox[i].addEventListener("click", function(){   
-                if(turn === true){ ;
-                message.textContent = players[1];
-                this.textContent = symbols[0];
-                turn = false;
-                } 
-                else {
-                message.textContent = players[0];
-                this.textContent = symbols[1];
-                turn = true;   
-                }
-        }); 
-    }   
-}
+// function playerTurn() {;
+//     for(var i = 0; i < selectBox.length; i++){
+//         selectBox[i].addEventListener("click", function(){   
+//                 if(turn === true){ ;
+//                 this.firstChild.textContent = 'x';
+//                 turn = false;
+//                 } 
+//                 else {
+//                 this.firstChild.textContent = 'x';
+//                 turn = true;   
+//                 }
+//         }); 
+//     }   
+// }
 
-function reset() {
-    resetButton.addEventListener("click", function(){
-        for(var i = 0; i < selectBox.length; i++){
-            selectBox[i].innerHTML = "";
-        }  
-        message.innerHTML = players[0];
-        turn = true;
-        gameOver = false;
-    });
-} 
+const gameBoard = (() => {
+    let board = [
+    '','','',
+    '','','',
+    '','',''
+    ];
+    let marks = ['X', 'O'];
+    
+    const Player = (name, mark) => {
+        let playersMark = mark; 
+        let turn = false;
+        let winner = false
+
+        const logMark = () => {
+            console.log(`${player} has chosen ${playersMark}`)
+        };
+
+        const appendMark = (index) => {
+            board[index] = playersMark;
+            displayMark(index);
+            return board[index];
+        };
+
+        const checkForWinner = () => {
+            console.log(board);
+        }
+
+        return {
+            name,
+            turn,
+            logMark,
+            appendMark,
+        };  
+    };
+
+    const player1 = Player('jane', 'X');
+    const player2 = Player('doe', 'O');
+    player1.turn = true
+
+    const activateListener = () => {
+        for (const box of selectBox) {
+            box.addEventListener("click", function(){  
+                if(player1.turn === true && board[box.dataset.indexNumber] === '') {
+                    player1.appendMark(box.dataset.indexNumber);
+                    player1.turn = false;
+                    player2.turn = true;
+                } else if(player2.turn === true && board[box.dataset.indexNumber] === '') {
+                    player2.appendMark(box.dataset.indexNumber);
+                    player1.turn = true;
+                    player2.turn = false;
+                }
+            }); 
+        }
+    }
+
+    const displayMark = (i) => {
+        selectBox[i].firstChild.textContent = board[i];
+    };
+ 
+    return {
+        activateListener,
+        player1,
+        player2,
+    };
+})();
+
+gameBoard.activateListener();
+
 
 
 
