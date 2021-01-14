@@ -2,8 +2,6 @@ const startButton = document.querySelector(".startButton");
 const selectBox = document.querySelectorAll(".grid-box");
 const content = document.querySelectorAll('.content');
 const message = document.querySelector(".message");
-var gameOver = true;
-var turn = true;
 
 runFunc();
 
@@ -12,32 +10,14 @@ function runFunc(){
 }
 
 function setButton() {
-    if(gameOver){
         startButton.addEventListener("click", function(){
             console.log('test');
             for(var i = 0; i < selectBox.length; i++){
                 selectBox[i].style.visibility = 'visible';
                 selectBox[i].style.transition = '0.6s';
             }
-            gameOver = false;
         }); 
-    }
 }
-
-// function playerTurn() {;
-//     for(var i = 0; i < selectBox.length; i++){
-//         selectBox[i].addEventListener("click", function(){   
-//                 if(turn === true){ ;
-//                 this.firstChild.textContent = 'x';
-//                 turn = false;
-//                 } 
-//                 else {
-//                 this.firstChild.textContent = 'x';
-//                 turn = true;   
-//                 }
-//         }); 
-//     }   
-// }
 
 const gameBoard = (() => {
     let board = [
@@ -46,6 +26,8 @@ const gameBoard = (() => {
     '','',''
     ];
     let marks = ['X', 'O'];
+    let gameOver = false;
+
     
     const Player = (name, mark) => {
         let playersMark = mark; 
@@ -63,7 +45,43 @@ const gameBoard = (() => {
         };
 
         const checkForWinner = () => {
-            console.log(board);
+            if (
+            board[0] === playersMark
+            && board[1] === playersMark
+            && board[2] === playersMark
+            ||
+            board[3] === playersMark 
+            && board[4] === playersMark 
+            && board[5] === playersMark
+            ||
+            board[6] === playersMark 
+            && board[7] === playersMark 
+            && board[8] === playersMark
+            ||
+            board[0] === playersMark
+            && board[3] === playersMark
+            && board[6] === playersMark
+            ||
+            board[1] === playersMark
+            && board[4] === playersMark
+            && board[7] === playersMark
+            ||
+            board[2] === playersMark
+            && board[5] === playersMark
+            && board[8] === playersMark
+            ||
+            board[0] === playersMark 
+            && board[4] === playersMark 
+            && board[8] === playersMark
+            ||
+            board[2] === playersMark 
+            && board[4] === playersMark 
+            && board[6] === playersMark
+            ) {
+                winner = true
+                gameOver = true
+                console.log(`${name} is the winner!`);
+            }
         }
 
         return {
@@ -71,6 +89,7 @@ const gameBoard = (() => {
             turn,
             logMark,
             appendMark,
+            checkForWinner
         };  
     };
 
@@ -81,14 +100,16 @@ const gameBoard = (() => {
     const activateListener = () => {
         for (const box of selectBox) {
             box.addEventListener("click", function(){  
-                if(player1.turn === true && board[box.dataset.indexNumber] === '') {
+                if(!gameOver && player1.turn && board[box.dataset.indexNumber] === '') {
                     player1.appendMark(box.dataset.indexNumber);
                     player1.turn = false;
                     player2.turn = true;
-                } else if(player2.turn === true && board[box.dataset.indexNumber] === '') {
+                    player1.checkForWinner();
+                } else if(!gameOver && player2.turn && board[box.dataset.indexNumber] === '') {
                     player2.appendMark(box.dataset.indexNumber);
                     player1.turn = true;
                     player2.turn = false;
+                    player2.checkForWinner();
                 }
             }); 
         }
@@ -100,8 +121,6 @@ const gameBoard = (() => {
  
     return {
         activateListener,
-        player1,
-        player2,
     };
 })();
 
