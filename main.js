@@ -1,6 +1,15 @@
 const startButton = document.querySelector(".start-button");
 const playerButton = document.querySelector('.player-button')
 const aiButton = document.querySelector('.ai-button')
+const formButton = document.querySelector('.form-button');
+const namesForm = document.querySelector('.names-form');
+const playerInput1 = document.querySelector('#player1-input');
+const playerInput2 = document.querySelector('#player2-input');
+const playerName1 = document.querySelector('.player-one');
+const playerName2 = document.querySelector('.player-two');
+const arrows = document.querySelector('.arrows');
+const status = document.querySelector('.status')
+const gameStatus = document.querySelector('.game-status')
 const selectBox = document.querySelectorAll(".grid-box");
 const grid = document.querySelector('.grid-container');
 const content = document.querySelectorAll('.content');
@@ -10,18 +19,19 @@ const message = document.querySelector(".message");
 const buttons = (() => {
     const buttonListeners = () => {
         playerButton.addEventListener('click', function() {
-            gameBoard.activateListener();
-            grid.style.display = 'grid';
+            namesForm.style.opacity = '1';
+            namesForm.style.visibility = 'visible'
+            gameBoard.createGame();
         });
         aiButton.addEventListener('click', function() {
-            console.log('clicked');
+            console.log('click')
         });
     };
 
     const setButton = () => {
         startButton.addEventListener('click', function(){
-            console.log('test');
-            startButton.style.display = 'none';
+            startButton.style.opacity = '0';
+            startButton.style.visibility = 'hidden';
             playerButton.style.opacity = '1';
             playerButton.style.visibility = 'visible';
             aiButton.style.visibility = 'visible';
@@ -47,6 +57,8 @@ const gameBoard = (() => {
     ];
     let marks = ['X', 'O'];
     let gameOver = false;
+    let name1 = undefined;
+    let name2 = undefined;
 
     
     const Player = (name, mark) => {
@@ -114,11 +126,31 @@ const gameBoard = (() => {
         };  
     };
 
-    const player1 = Player('jane', 'X');
-    const player2 = Player('doe', 'O');
-    player1.turn = true
+    const createGame = () => {
+        formButton.addEventListener('click', () => {
+            name1 = namesForm[0].value;
+            name2 = namesForm[1].value;
+            namesForm.style.display = 'none';
+            gameStatus.style.opacity = '1';
+            gameStatus.style.visibility = 'visible';
+            startButton.style.opacity = '1';
+            startButton.style.visibility = 'visible';
+            startButton.textContent = 'reset';
+            playerButton.style.opacity = '0';
+            playerButton.style.visibility = 'hidden';
+            aiButton.style.visibility = 'hidden';
+            aiButton.style.opacity = '0';
+            activateListener();
+            grid.style.display = 'grid';
+        })
+    };
 
-    const activateListener = () => {
+    function activateListener() {
+        let player1 = Player(name1,'X');
+        let player2 = Player(name2,'O');
+        console.log(player1);
+        console.log(player2);
+        player1.turn = true;
         for (const box of selectBox) {
             box.addEventListener("click", function(){  
                 if(!gameOver && player1.turn && board[box.dataset.indexNumber] === '') {
@@ -135,14 +167,11 @@ const gameBoard = (() => {
             }); 
         }
     }
- 
+
     return {
-        activateListener,
+        createGame,
     };
 })();
-
-gameBoard.activateListener();
-
 
 
 
