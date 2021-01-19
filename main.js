@@ -1,23 +1,43 @@
-const startButton = document.querySelector(".startButton");
+const startButton = document.querySelector(".start-button");
+const playerButton = document.querySelector('.player-button')
+const aiButton = document.querySelector('.ai-button')
 const selectBox = document.querySelectorAll(".grid-box");
+const grid = document.querySelector('.grid-container');
 const content = document.querySelectorAll('.content');
 const message = document.querySelector(".message");
 
-runFunc();
 
-function runFunc(){
-    setButton(); 
-}
+const buttons = (() => {
+    const buttonListeners = () => {
+        playerButton.addEventListener('click', function() {
+            gameBoard.activateListener();
+            grid.style.display = 'grid';
+        });
+        aiButton.addEventListener('click', function() {
+            console.log('clicked');
+        });
+    };
 
-function setButton() {
-        startButton.addEventListener("click", function(){
+    const setButton = () => {
+        startButton.addEventListener('click', function(){
             console.log('test');
-            for(var i = 0; i < selectBox.length; i++){
-                selectBox[i].style.visibility = 'visible';
-                selectBox[i].style.transition = '0.6s';
-            }
+            startButton.style.display = 'none';
+            playerButton.style.opacity = '1';
+            playerButton.style.visibility = 'visible';
+            aiButton.style.visibility = 'visible';
+            aiButton.style.opacity = '1';
+            buttonListeners();
         }); 
-}
+    };
+
+    return {
+        setButton
+    };
+})();
+
+buttons.setButton(); 
+
+
 
 const gameBoard = (() => {
     let board = [
@@ -40,7 +60,7 @@ const gameBoard = (() => {
 
         const appendMark = (index) => {
             board[index] = playersMark;
-            displayMark(index);
+            selectBox[index].firstChild.textContent = board[index];
             return board[index];
         };
 
@@ -81,9 +101,10 @@ const gameBoard = (() => {
                 winner = true
                 gameOver = true
                 console.log(`${name} is the winner!`);
+            } else if(!board.includes('') && !winner) {
+                console.log('board is full, its a tie!');
             }
         }
-
         return {
             name,
             turn,
@@ -104,20 +125,16 @@ const gameBoard = (() => {
                     player1.appendMark(box.dataset.indexNumber);
                     player1.turn = false;
                     player2.turn = true;
-                    player1.checkForWinner();
+                    player1.checkForWinner(box.dataset.indexNumber);
                 } else if(!gameOver && player2.turn && board[box.dataset.indexNumber] === '') {
                     player2.appendMark(box.dataset.indexNumber);
                     player1.turn = true;
                     player2.turn = false;
-                    player2.checkForWinner();
+                    player2.checkForWinner(box.dataset.indexNumber);
                 }
             }); 
         }
     }
-
-    const displayMark = (i) => {
-        selectBox[i].firstChild.textContent = board[i];
-    };
  
     return {
         activateListener,
