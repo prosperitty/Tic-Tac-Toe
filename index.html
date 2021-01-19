@@ -13,19 +13,40 @@
 <body class="background">
     <header class="header">
         <h1 class="message"><span class="red">Tic</span>-<span class="green">Tac</span>-<span class="blue">Toe</span></h1>
-        <button class="startButton">start game</button>
-        <!-- <button class="resetButton">reset</button> -->
+        <button class="player-button">2 Player</button>
+        <button class="start-button">start game</button>
+        <button class="ai-button">Ai</button>
     </header>
-    <section class="grid-container">
-        <div id="box1" class="grid-box" data-index-number="0"><span class="content"></span></div>
-        <div id="box2" class="grid-box" data-index-number="1"><span class="content"></span></div>
-        <div id="box3" class="grid-box" data-index-number="2"><span class="content"></span></div>
-        <div id="box4" class="grid-box" data-index-number="3"><span class="content"></span></div>
-        <div id="box5" class="grid-box" data-index-number="4"><span class="content"></span></div>
-        <div id="box6" class="grid-box" data-index-number="5"><span class="content"></span></div>
-        <div id="box7" class="grid-box" data-index-number="6"><span class="content"></span></div>
-        <div id="box8" class="grid-box" data-index-number="7"><span class="content"></span></div>
-        <div id="box9" class="grid-box" data-index-number="8"><span class="content"></span></div>
+    <section class="form-grid">
+        <form>
+            <div>
+                <p class="form-text">Player 1's Name:</p>
+                <input type="text" name="text" class="names-input">
+            </div>
+            <div>
+                <p class="form-text">Player 2's Name:</p>
+                <input type="text" name="text" class="names-input">
+            </div>
+            <button type="button">begin playing</button>
+        </form>
+        <p class="game-status">
+            <span class="player-one">Jane</span>
+            <span class="left-arrow">&#9756;</span>
+            <span class="status">winner!</span>
+            <span class="right-arrow">&#9758;</span>
+            <span class="player-two">Doe</span>
+        </p>
+        <div class="grid-container">
+            <div id="box1" class="grid-box" data-index-number="0"><span class="content"></span></div>
+            <div id="box2" class="grid-box" data-index-number="1"><span class="content"></span></div>
+            <div id="box3" class="grid-box" data-index-number="2"><span class="content"></span></div>
+            <div id="box4" class="grid-box" data-index-number="3"><span class="content"></span></div>
+            <div id="box5" class="grid-box" data-index-number="4"><span class="content"></span></div>
+            <div id="box6" class="grid-box" data-index-number="5"><span class="content"></span></div>
+            <div id="box7" class="grid-box" data-index-number="6"><span class="content"></span></div>
+            <div id="box8" class="grid-box" data-index-number="7"><span class="content"></span></div>
+            <div id="box9" class="grid-box" data-index-number="8"><span class="content"></span></div>
+        </div>
     </section>
     <ul class="circles">
         <li class="red">X</li>
