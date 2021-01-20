@@ -3,18 +3,14 @@ const playerButton = document.querySelector('.player-button')
 const aiButton = document.querySelector('.ai-button')
 const formButton = document.querySelector('.form-button');
 const namesForm = document.querySelector('.names-form');
-const playerInput1 = document.querySelector('#player1-input');
-const playerInput2 = document.querySelector('#player2-input');
-const playerName1 = document.querySelector('.player-one');
-const playerName2 = document.querySelector('.player-two');
-const arrows = document.querySelector('.arrows');
+const playerNames = document.querySelectorAll('.players');
+const arrows = document.querySelectorAll('.arrows');
 const status = document.querySelector('.status')
 const gameStatus = document.querySelector('.game-status')
 const selectBox = document.querySelectorAll(".grid-box");
 const grid = document.querySelector('.grid-container');
 const content = document.querySelectorAll('.content');
 const message = document.querySelector(".message");
-
 
 const buttons = (() => {
     const buttonListeners = () => {
@@ -47,8 +43,6 @@ const buttons = (() => {
 
 buttons.setButton(); 
 
-
-
 const gameBoard = (() => {
     let board = [
     '','','',
@@ -67,7 +61,7 @@ const gameBoard = (() => {
         let winner = false
 
         const logMark = () => {
-            console.log(`${player} has chosen ${playersMark}`)
+            console.log(`${name} has chosen ${playersMark}`)
         };
 
         const appendMark = (index) => {
@@ -112,11 +106,17 @@ const gameBoard = (() => {
             ) {
                 winner = true
                 gameOver = true
+                status.style.transition = 'all 0.5s ease-in'
+                status.textContent = `${name} is the winner!`
+                status.style.color = `rgb(77, 229, 77)`
                 console.log(`${name} is the winner!`);
             } else if(!board.includes('') && !winner) {
+                status.textContent = `tie!`
+                status.style.color = `orange`
                 console.log('board is full, its a tie!');
             }
         }
+
         return {
             name,
             turn,
@@ -140,8 +140,8 @@ const gameBoard = (() => {
             playerButton.style.visibility = 'hidden';
             aiButton.style.visibility = 'hidden';
             aiButton.style.opacity = '0';
-            activateListener();
             grid.style.display = 'grid';
+            activateListener();
         })
     };
 
@@ -151,17 +151,20 @@ const gameBoard = (() => {
         console.log(player1);
         console.log(player2);
         player1.turn = true;
+        status.textContent = `${player1.name}'s turn`;
         for (const box of selectBox) {
             box.addEventListener("click", function(){  
                 if(!gameOver && player1.turn && board[box.dataset.indexNumber] === '') {
                     player1.appendMark(box.dataset.indexNumber);
                     player1.turn = false;
                     player2.turn = true;
+                    status.textContent = `${player2.name}'s turn`;
                     player1.checkForWinner(box.dataset.indexNumber);
                 } else if(!gameOver && player2.turn && board[box.dataset.indexNumber] === '') {
                     player2.appendMark(box.dataset.indexNumber);
                     player1.turn = true;
                     player2.turn = false;
+                    status.textContent = `${player1.name}'s turn`;
                     player2.checkForWinner(box.dataset.indexNumber);
                 }
             }); 
