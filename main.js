@@ -2,6 +2,7 @@ const startButton = document.querySelector(".start-button");
 const playerButton = document.querySelector('.player-button')
 const aiButton = document.querySelector('.ai-button')
 const formButton = document.querySelector('.form-button');
+const resetButton = document.querySelector('.reset-button');
 const namesForm = document.querySelector('.names-form');
 const playerNames = document.querySelectorAll('.players');
 const arrows = document.querySelectorAll('.arrows');
@@ -49,7 +50,6 @@ const gameBoard = (() => {
     '','','',
     '','',''
     ];
-    let marks = ['X', 'O'];
     let gameOver = false;
     let name1 = undefined;
     let name2 = undefined;
@@ -59,10 +59,6 @@ const gameBoard = (() => {
         let playersMark = mark; 
         let turn = false;
         let winner = false
-
-        const logMark = () => {
-            console.log(`${name} has chosen ${playersMark}`)
-        };
 
         const appendMark = (index) => {
             board[index] = playersMark;
@@ -120,7 +116,6 @@ const gameBoard = (() => {
         return {
             name,
             turn,
-            logMark,
             appendMark,
             checkForWinner
         };  
@@ -133,9 +128,8 @@ const gameBoard = (() => {
             namesForm.style.display = 'none';
             gameStatus.style.opacity = '1';
             gameStatus.style.visibility = 'visible';
-            startButton.style.opacity = '1';
-            startButton.style.visibility = 'visible';
-            startButton.textContent = 'reset';
+            resetButton.style.display = 'inline-block';
+            startButton.style.display = 'none';
             playerButton.style.opacity = '0';
             playerButton.style.visibility = 'hidden';
             aiButton.style.visibility = 'hidden';
@@ -148,12 +142,11 @@ const gameBoard = (() => {
     function activateListener() {
         let player1 = Player(name1,'X');
         let player2 = Player(name2,'O');
-        console.log(player1);
-        console.log(player2);
         player1.turn = true;
         status.textContent = `${player1.name}'s turn`;
         for (const box of selectBox) {
             box.addEventListener("click", function(){  
+                console.log(box)
                 if(!gameOver && player1.turn && board[box.dataset.indexNumber] === '') {
                     player1.appendMark(box.dataset.indexNumber);
                     player1.turn = false;
@@ -168,8 +161,20 @@ const gameBoard = (() => {
                     player2.checkForWinner(box.dataset.indexNumber);
                 }
             }); 
-        }
-    }
+            resetButton.addEventListener('click', () => {
+                gameOver = false
+                player1.turn = true
+                status.style.color = `white`
+                status.textContent = `${player1.name}'s turn`;
+                board = [
+                    '','','',
+                    '','','',
+                    '','',''
+                    ];
+                box.firstChild.textContent = board[box.dataset.indexNumber];
+            });
+        };
+    };
 
     return {
         createGame,
