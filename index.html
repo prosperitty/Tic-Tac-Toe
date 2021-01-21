@@ -15,17 +15,18 @@
         <h1 class="message"><span class="red">Tic</span>-<span class="green">Tac</span>-<span class="blue">Toe</span></h1>
         <button class="player-button">2 Player</button>
         <button class="start-button">start game</button>
-        <button class="ai-button">Ai</button>
+        <button class="reset-button">reset</button>
+        <button class="ai-button">Ai (soon)</button>
     </header>
     <section class="form-grid">
         <form class="names-form">
             <div>
-                <p class="form-text">Player 1's Name:</p>
-                <input type="text" name="text" class="names-input" id="player1-input">
+                <p class="form-text">player X name:</p>
+                <input type="text" name="text" class="names-input" id="player1-input" required minlength="1">
             </div>
             <div>
-                <p class="form-text">Player 2's Name:</p>
-                <input type="text" name="text" class="names-input" id="player2-input">
+                <p class="form-text">player O name:</p>
+                <input type="text" name="text" class="names-input" id="player2-input" required minlength="1">
             </div>
             <button type="button" class="form-button">begin playing</button>
         </form>
