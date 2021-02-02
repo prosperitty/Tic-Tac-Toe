@@ -121,29 +121,7 @@ const gameBoard = (() => {
         };  
     };
 
-    const createGame = () => {
-        formButton.addEventListener('click', () => {
-            playerName1 = namesForm[0].value;
-            playerName2 = namesForm[1].value;
-            namesForm.style.display = 'none';
-            resetButton.style.display = 'inline-block';
-            startButton.style.display = 'none';
-            grid.style.display = 'grid';
-            gameStatus.style.opacity = '1';
-            playerButton.style.opacity = '0';
-            aiButton.style.opacity = '0';
-            gameStatus.style.visibility = 'visible';
-            playerButton.style.visibility = 'hidden';
-            aiButton.style.visibility = 'hidden';
-            activate2PlayerMode();
-        })
-    };
-
-    const randomNum = () => {
-        return Math.floor(Math.random() * (selectBox.length - 0) + 0);
-    }
-
-    function activateAiMode() {
+    const displayControl = () => {
         namesForm.style.display = 'none';
         resetButton.style.display = 'inline-block';
         startButton.style.display = 'none';
@@ -154,25 +132,57 @@ const gameBoard = (() => {
         gameStatus.style.visibility = 'visible';
         playerButton.style.visibility = 'hidden';
         aiButton.style.visibility = 'hidden';
+    }
+
+    const createGame = () => {
+        formButton.addEventListener('click', () => {
+            playerName1 = namesForm[0].value;
+            playerName2 = namesForm[1].value;
+            displayControl();
+            activate2PlayerMode();
+        })
+    };
+
+    function minimax(node, depth, maximizingPlayer) {
+    
+    }
+
+    const randomNum = () => {
+        return Math.floor(Math.random() * (selectBox.length - 0) + 0);
+    }
+
+    function activateAiMode() {
+        displayControl();
         let player1 = Player(playerName1,'X');
         let aiBot = Player('bot','O');
         player1.turn = true;
         gameStatus.textContent = `${player1.name}'s turn`;
         for (const box of selectBox) {
+            function aiPlay() {
+                if(!gameOver && aiBot.turn) {
+                    let randomIndex = randomNum();
+                    if(board[randomIndex] === '') {
+                        console.log('entry clear');
+                        player1.turn = true;
+                        aiBot.turn = false;
+                        gameStatus.textContent = `${player1.name}'s turn`;
+                        aiBot.checkForWinner();
+                        aiBot.appendMark(randomIndex)
+                    } else if(!gameOver) {
+                        console.log('not available');
+                        aiPlay();
+                        aiBot.checkForWinner();
+                    }
+                }
+            }
             box.addEventListener("click", function(){  
                 if(!gameOver && player1.turn && board[box.dataset.indexNumber] === '') {
                     player1.appendMark(box.dataset.indexNumber);
                     player1.turn = false;
                     aiBot.turn = true;
                     gameStatus.textContent = `${aiBot.name}'s turn`;
-                    player1.checkForWinner(box.dataset.indexNumber);
-                    if(!gameOver && aiBot.turn && board[box.dataset.indexNumber] === '') {
-                        aiBot.appendMark(randomNum());
-                        player1.turn = true;
-                        aiBot.turn = false;
-                        gameStatus.textContent = `${player1.name}'s turn`;
-                        aiBot.checkForWinner(box.dataset.indexNumber);
-                    }
+                    player1.checkForWinner();
+                    aiPlay();
                 } 
             }); 
             resetButton.addEventListener('click', () => {
@@ -204,13 +214,13 @@ const gameBoard = (() => {
                     player1.turn = false;
                     player2.turn = true;
                     gameStatus.textContent = `${player2.name}'s turn`;
-                    player1.checkForWinner(box.dataset.indexNumber);
+                    player1.checkForWinner();
                 } else if(!gameOver && player2.turn && board[box.dataset.indexNumber] === '') {
                     player2.appendMark(box.dataset.indexNumber);
                     player1.turn = true;
                     player2.turn = false;
                     gameStatus.textContent = `${player1.name}'s turn`;
-                    player2.checkForWinner(box.dataset.indexNumber);
+                    player2.checkForWinner();
                 }
             }); 
             resetButton.addEventListener('click', () => {
