@@ -23,7 +23,6 @@ const buttons = (() => {
             namesForm.style.opacity = '1';
             namesForm.style.visibility = 'visible'
             gameBoard.activateAiMode();
-            console.log('click')
         });
     };
 
@@ -57,7 +56,6 @@ const gameBoard = (() => {
     const Player = (name, mark) => {
         let playersMark = mark; 
         let turn = false;
-        let winner = false
 
         const appendMark = (index) => {
             if(board[index] === '') {
@@ -100,15 +98,15 @@ const gameBoard = (() => {
             && board[4] === playersMark 
             && board[6] === playersMark
             ) {
-                winner = true
-                gameOver = true
-                gameStatus.style.transition = 'all 0.5s ease-in'
-                gameStatus.textContent = `${name} is the winner!`
-                gameStatus.style.color = `rgb(77, 229, 77)`
+                gameOver = true;
+                gameStatus.style.transition = 'all 0.5s ease-in';
+                gameStatus.textContent = `${name} is the winner!`;
+                gameStatus.style.color = `rgb(77, 229, 77)`;
                 console.log(`${name} is the winner!`);
-            } else if(!board.includes('') && !winner) {
-                gameStatus.textContent = `tie!`
-                gameStatus.style.color = `orange`
+            } else if(!board.includes('')) {
+                gameOver = true;
+                gameStatus.textContent = `tie!`;
+                gameStatus.style.color = `orange`;
                 console.log('board is full, its a tie!');
             }
         }
@@ -153,25 +151,24 @@ const gameBoard = (() => {
 
     function activateAiMode() {
         displayControl();
-        let player1 = Player(playerName1,'X');
+        let player1 = Player('Your','X');
         let aiBot = Player('bot','O');
         player1.turn = true;
-        gameStatus.textContent = `${player1.name}'s turn`;
+        gameStatus.textContent = `${player1.name} turn`;
         for (const box of selectBox) {
             function aiPlay() {
-                if(!gameOver && aiBot.turn) {
-                    let randomIndex = randomNum();
+                let randomIndex = randomNum();
+                if(!gameOver && aiBot.turn && board.includes('')) {
                     if(board[randomIndex] === '') {
                         console.log('entry clear');
+                        aiBot.appendMark(randomIndex);
                         player1.turn = true;
                         aiBot.turn = false;
-                        gameStatus.textContent = `${player1.name}'s turn`;
+                        gameStatus.textContent = `${player1.name} turn`;
                         aiBot.checkForWinner();
-                        aiBot.appendMark(randomIndex)
-                    } else if(!gameOver) {
+                    } else if(!gameOver && board[randomIndex] !== '') {
                         console.log('not available');
                         aiPlay();
-                        aiBot.checkForWinner();
                     }
                 }
             }
@@ -180,9 +177,11 @@ const gameBoard = (() => {
                     player1.appendMark(box.dataset.indexNumber);
                     player1.turn = false;
                     aiBot.turn = true;
-                    gameStatus.textContent = `${aiBot.name}'s turn`;
+                    gameStatus.textContent = `Awaiting ${aiBot.name}...`
                     player1.checkForWinner();
-                    aiPlay();
+                    setTimeout(() => {
+                        aiPlay();
+                    }, 600);
                 } 
             }); 
             resetButton.addEventListener('click', () => {
@@ -192,11 +191,9 @@ const gameBoard = (() => {
                 '','',''
                 ];
                 gameOver = false
-                player1.winner = false;
-                aiBot.winner = false;
                 player1.turn = true
                 gameStatus.style.color = `white`
-                gameStatus.textContent = `${player1.name}'s turn`;
+                gameStatus.textContent = `${player1.name} turn`;
                 box.firstChild.textContent = board[box.dataset.indexNumber];
             });
         };
@@ -230,8 +227,6 @@ const gameBoard = (() => {
                 '','',''
                 ];
                 gameOver = false;
-                player1.winner = false;
-                player2.winner = false;
                 player1.turn = true;
                 gameStatus.style.color = `white`;
                 gameStatus.textContent = `${player1.name}'s turn`;
