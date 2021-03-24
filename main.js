@@ -7,7 +7,7 @@ const namesForm = document.querySelector('.names-form');
 const playerNames = document.querySelectorAll('.players');
 const status = document.querySelector('.status');
 const gameStatus = document.querySelector('.game-status')
-const selectBox = document.querySelectorAll(".grid-box");
+const selectBox = document.querySelectorAll('.grid-box');
 const grid = document.querySelector('.grid-container');
 const content = document.querySelectorAll('.content');
 const message = document.querySelector(".message");
@@ -50,12 +50,15 @@ const gameBoard = (() => {
     '','',''
     ];
     let gameOver = false;
+    let player1 = undefined
+    let player2 = undefined
     let playerName1 = undefined;
     let playerName2 = undefined;
 
     const Player = (name, mark) => {
         let playersMark = mark; 
         let turn = false;
+        let win = false;
 
         const appendMark = (index) => {
             if(board[index] === '') {
@@ -103,17 +106,21 @@ const gameBoard = (() => {
                 gameStatus.textContent = `${name} is the winner!`;
                 gameStatus.style.color = `rgb(77, 229, 77)`;
                 console.log(`${name} is the winner!`);
-            } else if(!board.includes('')) {
+                return true;
+            } else if(!board.includes('') && !gameOver) {
                 gameOver = true;
                 gameStatus.textContent = `tie!`;
                 gameStatus.style.color = `orange`;
                 console.log('board is full, its a tie!');
+                return false;
             }
         }
 
         return {
             name,
             turn,
+            win,
+            num,
             appendMark,
             checkForWinner
         };  
@@ -141,9 +148,87 @@ const gameBoard = (() => {
         })
     };
 
-    function minimax(node, depth, maximizingPlayer) {
-    
+    function isMovesLeft() {
+        let bool = undefined
+        board.forEach((e) => {
+            if (e == '') {
+                bool = true;
+            } else {
+                bool = false;
+            }
+        }) 
+        return bool;
     }
+
+    function getScore(playerWin, opponentWin) {
+        if (playerWin) {
+            return 10;
+        } else if (opponentWin) {
+            return -10;
+        } else {
+            return 0;
+        }
+    }
+
+    function minimax(b, depth, maximizingPlayer) {
+        let score = getScore(b, player1.win, player2.win)
+
+        if (score === 10) {
+            return score;
+        }
+        if(score === -10) {
+            return score;
+        }
+        if(isMovesLeft() === false) {
+            return 0;
+        }
+
+        if (maximizingPlayer) {
+            let best = -Infinity
+            b.forEach((e,i) => {
+                if (e === '') {
+                    e = 'O';
+                    let score = minimax(b,depth + 1,false);
+                    e = '';
+                    best = max(score,best);
+                }
+            });
+            return best;
+        } else {
+            let best = Infinity;
+            b.forEach(e => {
+                if (e === '') {
+                    e = 'X';
+                    let score = minimax(b, depth + 1, true);
+                    e = '';
+                    best = min(score, best);
+                }
+            });
+            return best;
+        }
+    }
+
+    function findBestMove(b) {
+        let bestVal = -Infinity;
+        let bestMove;
+
+        b.forEach(function(e,i) {
+            if (e === '') {
+                e = 'O';
+                let score = minimax(board,0,false);
+                e = '';
+                if (score > bestVal) {
+                    bestVal = score;
+                    bestMove = {i};
+                }
+            }
+        });
+        console.log(`the value of the best move is ${bestVal}`)
+    }
+
+    // let besttt = findBestMove(board);
+    // console.log('the optimal move is:')
+    
 
     const randomNum = () => {
         return Math.floor(Math.random() * (selectBox.length - 0) + 0);
@@ -151,57 +236,59 @@ const gameBoard = (() => {
 
     function activateAiMode() {
         displayControl();
-        let player1 = Player('Your','X');
-        let aiBot = Player('bot','O');
+        player1 = Player('Your','X');
+        player2 = Player('bot','O');
         player1.turn = true;
         gameStatus.textContent = `${player1.name} turn`;
-        for (const box of selectBox) {
-            function aiPlay() {
-                let randomIndex = randomNum();
-                if(!gameOver && aiBot.turn && board.includes('')) {
-                    if(board[randomIndex] === '') {
-                        console.log('entry clear');
-                        aiBot.appendMark(randomIndex);
-                        player1.turn = true;
-                        aiBot.turn = false;
-                        gameStatus.textContent = `${player1.name} turn`;
-                        aiBot.checkForWinner();
-                    } else if(!gameOver && board[randomIndex] !== '') {
-                        console.log('not available');
-                        aiPlay();
-                    }
+        function aiPlay() {
+            let randomIndex = randomNum();
+            if(!gameOver && player2.turn && board.includes('')) {
+                if(board[randomIndex] === '') {
+                    console.log('entry clear');
+                    player2.appendMark(randomIndex);
+                    player1.turn = true;
+                    player2.turn = false;
+                    gameStatus.textContent = `${player1.name} turn`;
+                    player2.win = player2.checkForWinner();
+                } else if(!gameOver && board[randomIndex] !== '') {
+                    console.log('not available');
+                    aiPlay();
                 }
             }
-            box.addEventListener("click", function(){  
-                if(!gameOver && player1.turn && board[box.dataset.indexNumber] === '') {
-                    player1.appendMark(box.dataset.indexNumber);
+        }
+        selectBox.forEach((e,i) => {
+            e.addEventListener("click", function(){  
+                if(!gameOver && player1.turn && board[i] === '') {
+                    player1.appendMark(i);
                     player1.turn = false;
-                    aiBot.turn = true;
-                    gameStatus.textContent = `Awaiting ${aiBot.name}...`
-                    player1.checkForWinner();
+                    player2.turn = true;
+                    gameStatus.textContent = `Awaiting ${player2.name}...`
+                    player1.win = player1.checkForWinner();
                     setTimeout(() => {
                         aiPlay();
                     }, 600);
                 } 
             }); 
-            resetButton.addEventListener('click', () => {
-                board = [
-                '','','',
-                '','','',
-                '','',''
-                ];
-                gameOver = false
-                player1.turn = true
-                gameStatus.style.color = `white`
-                gameStatus.textContent = `${player1.name} turn`;
-                box.firstChild.textContent = board[box.dataset.indexNumber];
-            });
-        };
+        });
+        resetButton.addEventListener('click', () => {
+            board = [
+            '','','',
+            '','','',
+            '','',''
+            ];
+            gameOver = false
+            player1.turn = true
+            gameStatus.style.color = `white`
+            gameStatus.textContent = `${player1.name} turn`;
+            selectBox.forEach(e => {
+                e.firstChild.textContent = board[e.dataset.indexNumber];
+            }) 
+        });
     }
  
     function activate2PlayerMode() {
-        let player1 = Player(playerName1,'X');
-        let player2 = Player(playerName2,'O');
+        player1 = Player(playerName1,'X');
+        player2 = Player(playerName2,'O');
         player1.turn = true;
         gameStatus.textContent = `${player1.name}'s turn`;
         for (const box of selectBox) {
