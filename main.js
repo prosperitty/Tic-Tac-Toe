@@ -102,17 +102,17 @@ const gameBoard = (() => {
             && board[6] === playersMark
             ) {
                 gameOver = true;
-                gameStatus.style.transition = 'all 0.5s ease-in';
-                gameStatus.textContent = `${name} is the winner!`;
-                gameStatus.style.color = `rgb(77, 229, 77)`;
-                console.log(`${name} is the winner!`);
-                return true;
+                // gameStatus.style.transition = 'all 0.5s ease-in';
+                // gameStatus.textContent = `${name} is the winner!`;
+                // gameStatus.style.color = `rgb(77, 229, 77)`;
+                // console.log(`${name} is the winner!`);
+                return 10;
             } else if(!board.includes('') && !gameOver) {
                 gameOver = true;
-                gameStatus.textContent = `tie!`;
-                gameStatus.style.color = `orange`;
-                console.log('board is full, its a tie!');
-                return false;
+                // gameStatus.textContent = `tie!`;
+                // gameStatus.style.color = `orange`;
+                // console.log('board is full, its a tie!');
+                return 0;
             }
         }
 
@@ -120,7 +120,6 @@ const gameBoard = (() => {
             name,
             turn,
             win,
-            num,
             appendMark,
             checkForWinner
         };  
@@ -148,60 +147,60 @@ const gameBoard = (() => {
         })
     };
 
-    function isMovesLeft() {
-        let bool = undefined
-        board.forEach((e) => {
-            if (e == '') {
-                bool = true;
-            } else {
-                bool = false;
-            }
-        }) 
-        return bool;
-    }
+    // function isMovesLeft() {
+    //     let bool = undefined
+    //     board.forEach((e) => {
+    //         console.log(e);
+    //         if (e == '') {
+    //             return bool = true;
+    //         } 
+    //     });
+    //     console.log(board)
+    //     return false;
+    // }
 
     function getScore(playerWin, opponentWin) {
         if (playerWin) {
             return 10;
         } else if (opponentWin) {
             return -10;
-        } else {
-            return 0;
-        }
+        } 
+        return 0;
     }
 
     function minimax(b, depth, maximizingPlayer) {
-        let score = getScore(b, player1.win, player2.win)
+        let playerScore = player1.checkForWinner();
+        let aiScore = player2.checkForWinner();
 
-        if (score === 10) {
-            return score;
+        if(playerScore === 10) {
+            return 10;
         }
-        if(score === -10) {
-            return score;
+        if(aiScore === 10) {
+            return -10; 
         }
-        if(isMovesLeft() === false) {
+        if(playerScore === 0 || aiScore === 0) {
             return 0;
         }
 
         if (maximizingPlayer) {
-            let best = -Infinity
+            let best = -Infinity;
             b.forEach((e,i) => {
                 if (e === '') {
-                    e = 'O';
+                    b[i] = 'O';
                     let score = minimax(b,depth + 1,false);
-                    e = '';
-                    best = max(score,best);
+                    best = Math.max(best,score);
+                    b[i] = '';
                 }
             });
             return best;
         } else {
             let best = Infinity;
-            b.forEach(e => {
+            b.forEach((e,i) => {
                 if (e === '') {
-                    e = 'X';
+                    b[i] = 'X';
                     let score = minimax(b, depth + 1, true);
-                    e = '';
-                    best = min(score, best);
+                    best = Math.min(best,score);
+                    b[i] = '';
                 }
             });
             return best;
@@ -210,26 +209,25 @@ const gameBoard = (() => {
 
     function findBestMove(b) {
         let bestVal = -Infinity;
-        let bestMove;
+        let bestMove = undefined;
 
         b.forEach(function(e,i) {
             if (e === '') {
-                e = 'O';
-                let score = minimax(board,0,false);
-                e = '';
+                b[i] = 'O';
+                let score = minimax(b,0,false);
+                b[i] = '';
                 if (score > bestVal) {
                     bestVal = score;
-                    bestMove = {i};
+                    bestMove = i;
                 }
             }
         });
         console.log(`the value of the best move is ${bestVal}`)
+        // b[bestMove.i] = 'O';
+        console.log(bestMove)
+        return bestMove;
     }
-
-    // let besttt = findBestMove(board);
-    // console.log('the optimal move is:')
     
-
     const randomNum = () => {
         return Math.floor(Math.random() * (selectBox.length - 0) + 0);
     }
@@ -240,20 +238,30 @@ const gameBoard = (() => {
         player2 = Player('bot','O');
         player1.turn = true;
         gameStatus.textContent = `${player1.name} turn`;
-        function aiPlay() {
-            let randomIndex = randomNum();
+        // function aiPlay() {
+        //     let randomIndex = randomNum();
+        //     if(!gameOver && player2.turn && board.includes('')) {
+        //         if(board[randomIndex] === '') {
+        //             console.log('entry clear');
+        //             player2.appendMark(randomIndex);
+        //             player1.turn = true;
+        //             player2.turn = false;
+        //             gameStatus.textContent = `${player1.name} turn`;
+        //             player2.win = player2.checkForWinner();
+        //         } else if(!gameOver && board[randomIndex] !== '') {
+        //             console.log('not available');
+        //             aiPlay();
+        //         }
+        //     }
+        // }
+        function aiPlay2() {
             if(!gameOver && player2.turn && board.includes('')) {
-                if(board[randomIndex] === '') {
-                    console.log('entry clear');
-                    player2.appendMark(randomIndex);
+                    player2.appendMark(findBestMove(board));
                     player1.turn = true;
                     player2.turn = false;
                     gameStatus.textContent = `${player1.name} turn`;
-                    player2.win = player2.checkForWinner();
-                } else if(!gameOver && board[randomIndex] !== '') {
-                    console.log('not available');
-                    aiPlay();
-                }
+                    gameOver = false
+                    player2.checkForWinner();
             }
         }
         selectBox.forEach((e,i) => {
@@ -263,9 +271,10 @@ const gameBoard = (() => {
                     player1.turn = false;
                     player2.turn = true;
                     gameStatus.textContent = `Awaiting ${player2.name}...`
-                    player1.win = player1.checkForWinner();
+                    gameOver = false;
+                    player1.checkForWinner();
                     setTimeout(() => {
-                        aiPlay();
+                        aiPlay2();
                     }, 600);
                 } 
             }); 
@@ -278,6 +287,8 @@ const gameBoard = (() => {
             ];
             gameOver = false
             player1.turn = true
+            player1.win = false;
+            player2.win = false;
             gameStatus.style.color = `white`
             gameStatus.textContent = `${player1.name} turn`;
             selectBox.forEach(e => {
