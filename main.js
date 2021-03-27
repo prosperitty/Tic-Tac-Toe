@@ -147,38 +147,18 @@ const gameBoard = (() => {
         })
     };
 
-    // function isMovesLeft() {
-    //     let bool = undefined
-    //     board.forEach((e) => {
-    //         console.log(e);
-    //         if (e == '') {
-    //             return bool = true;
-    //         } 
-    //     });
-    //     console.log(board)
-    //     return false;
-    // }
-
-    function getScore(playerWin, opponentWin) {
-        if (playerWin) {
-            return 10;
-        } else if (opponentWin) {
-            return -10;
-        } 
-        return 0;
-    }
-
     function minimax(b, depth, maximizingPlayer) {
         let playerScore = player1.checkForWinner();
         let aiScore = player2.checkForWinner();
 
         if(playerScore === 10) {
-            return 10;
-        }
+            return playerScore - depth;
+        } 
         if(aiScore === 10) {
-            return -10; 
-        }
-        if(playerScore === 0 || aiScore === 0) {
+            aiScore = -10;
+            return aiScore + depth; 
+        } 
+        if(playerScore === 0 && aiScore === 0) {
             return 0;
         }
 
@@ -186,8 +166,8 @@ const gameBoard = (() => {
             let best = -Infinity;
             b.forEach((e,i) => {
                 if (e === '') {
-                    b[i] = 'O';
-                    let score = minimax(b,depth + 1,false);
+                    b[i] = 'X';
+                    let score = minimax(b,depth+1,false);
                     best = Math.max(best,score);
                     b[i] = '';
                 }
@@ -197,8 +177,8 @@ const gameBoard = (() => {
             let best = Infinity;
             b.forEach((e,i) => {
                 if (e === '') {
-                    b[i] = 'X';
-                    let score = minimax(b, depth + 1, true);
+                    b[i] = 'O';
+                    let score = minimax(b,depth+1,true);
                     best = Math.min(best,score);
                     b[i] = '';
                 }
@@ -213,7 +193,7 @@ const gameBoard = (() => {
 
         b.forEach(function(e,i) {
             if (e === '') {
-                b[i] = 'O';
+                b[i] = 'X';
                 let score = minimax(b,0,false);
                 b[i] = '';
                 if (score > bestVal) {
@@ -224,6 +204,7 @@ const gameBoard = (() => {
         });
         console.log(`the value of the best move is ${bestVal}`)
         // b[bestMove.i] = 'O';
+        player2.appendMark(bestMove);
         console.log(bestMove)
         return bestMove;
     }
@@ -238,7 +219,7 @@ const gameBoard = (() => {
         player2 = Player('bot','O');
         player1.turn = true;
         gameStatus.textContent = `${player1.name} turn`;
-        // function aiPlay() {
+        // function aiEasy() {
         //     let randomIndex = randomNum();
         //     if(!gameOver && player2.turn && board.includes('')) {
         //         if(board[randomIndex] === '') {
@@ -256,7 +237,7 @@ const gameBoard = (() => {
         // }
         function aiPlay2() {
             if(!gameOver && player2.turn && board.includes('')) {
-                    player2.appendMark(findBestMove(board));
+                    findBestMove(board)
                     player1.turn = true;
                     player2.turn = false;
                     gameStatus.textContent = `${player1.name} turn`;
