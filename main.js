@@ -193,11 +193,10 @@ const gameBoard = (() => {
         let aiScore = player2.checkForWinner();
 
         if(playerScore === 10) {
-            return playerScore - depth;
+            return depth - playerScore;
         } 
         if(aiScore === 10) {
-            aiScore = -10;
-            return aiScore + depth; 
+            return aiScore - depth; 
         } 
         if(playerScore === 0 || aiScore === 0) {
             return 0;
@@ -207,8 +206,8 @@ const gameBoard = (() => {
             let best = -Infinity;
             b.forEach((e,i) => {
                 if (e === '') {
-                    b[i] = player1.mark;
-                    let score = minimax(b,depth+1,false);
+                    b[i] = player2.mark;
+                    let score = minimax(b,depth-1,false);
                     best = Math.max(best,score);
                     b[i] = '';
                 }
@@ -218,8 +217,8 @@ const gameBoard = (() => {
             let best = Infinity;
             b.forEach((e,i) => {
                 if (e === '') {
-                    b[i] = player2.mark;
-                    let score = minimax(b,depth+1,true);
+                    b[i] = player1.mark;
+                    let score = minimax(b,depth-1,true);
                     best = Math.min(best,score);
                     b[i] = '';
                 }
@@ -234,7 +233,7 @@ const gameBoard = (() => {
 
         b.forEach(function(e,i) {
             if (e === '') {
-                b[i] = player1.mark;
+                b[i] = player2.mark;
                 let score = minimax(b,0,false);
                 b[i] = '';
                 if (score > bestVal) {
