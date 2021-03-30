@@ -56,71 +56,72 @@ const gameBoard = (() => {
     let playerName2 = undefined;
 
     const Player = (name, mark) => {
-        let playersMark = mark; 
         let turn = false;
-        let win = false;
 
         const appendMark = (index) => {
             if(board[index] === '') {
-                board[index] = playersMark;
+                board[index] = mark;
                 selectBox[index].firstChild.textContent = board[index];
             }
         };
 
         const checkForWinner = () => {
             if (
-            board[0] === playersMark
-            && board[1] === playersMark
-            && board[2] === playersMark
+            board[0] === mark
+            && board[1] === mark
+            && board[2] === mark
             ||
-            board[3] === playersMark 
-            && board[4] === playersMark 
-            && board[5] === playersMark
+            board[3] === mark 
+            && board[4] === mark 
+            && board[5] === mark
             ||
-            board[6] === playersMark 
-            && board[7] === playersMark 
-            && board[8] === playersMark
+            board[6] === mark 
+            && board[7] === mark 
+            && board[8] === mark
             ||
-            board[0] === playersMark
-            && board[3] === playersMark
-            && board[6] === playersMark
+            board[0] === mark
+            && board[3] === mark
+            && board[6] === mark
             ||
-            board[1] === playersMark
-            && board[4] === playersMark
-            && board[7] === playersMark
+            board[1] === mark
+            && board[4] === mark
+            && board[7] === mark
             ||
-            board[2] === playersMark
-            && board[5] === playersMark
-            && board[8] === playersMark
+            board[2] === mark
+            && board[5] === mark
+            && board[8] === mark
             ||
-            board[0] === playersMark 
-            && board[4] === playersMark 
-            && board[8] === playersMark
+            board[0] === mark 
+            && board[4] === mark 
+            && board[8] === mark
             ||
-            board[2] === playersMark 
-            && board[4] === playersMark 
-            && board[6] === playersMark
+            board[2] === mark 
+            && board[4] === mark 
+            && board[6] === mark
             ) {
-                gameOver = true;
-                // gameStatus.style.transition = 'all 0.5s ease-in';
-                // gameStatus.textContent = `${name} is the winner!`;
-                // gameStatus.style.color = `rgb(77, 229, 77)`;
-                // console.log(`${name} is the winner!`);
                 return 10;
             } else if(!board.includes('') && !gameOver) {
-                gameOver = true;
-                // gameStatus.textContent = `tie!`;
-                // gameStatus.style.color = `orange`;
-                // console.log('board is full, its a tie!');
                 return 0;
+            }
+        }
+
+        const confirmWinner = () => {
+            if(checkForWinner()) {
+                displayWinner(name);
+                return gameOver = true;
+
+            } else if (!board.includes('')) {
+                displayTie();
+                return gameOver = true;
             }
         }
 
         return {
             name,
             turn,
-            win,
+            mark,
             appendMark,
+            confirmWinner,
             checkForWinner
         };  
     };
@@ -136,6 +137,46 @@ const gameBoard = (() => {
         gameStatus.style.visibility = 'visible';
         playerButton.style.visibility = 'hidden';
         aiButton.style.visibility = 'hidden';
+    }
+
+    const displayTie = () => {
+        gameStatus.textContent = `tie!`;
+        gameStatus.style.color = `orange`;
+        console.log('board is full, its a tie!');
+    }
+
+    const displayWinner = (name) => {
+        gameStatus.style.transition = 'all 0.5s ease-in';
+        gameStatus.textContent = `${name} is the winner!`;
+        gameStatus.style.color = `rgb(77, 229, 77)`;
+        console.log(`${name} is the winner!`);
+    }
+
+    const player1Turn = () => {
+        player1.turn = true;
+        player2.turn = false;
+        gameStatus.textContent = `${player1.name}'s turn`;
+    }
+
+    const player2Turn = () => {
+        player1.turn = false;
+        player2.turn = true;
+        gameStatus.textContent = `${player2.name}'s turn`;
+    }
+
+    const resetBoard = () => {
+        board = [
+            '','','',
+            '','','',
+            '','',''
+            ];
+        gameOver = false;
+        player1.turn = true;
+        gameStatus.style.color = `white`;
+        gameStatus.textContent = `${player1.name}'s turn`;
+        selectBox.forEach(e => {
+            e.firstChild.textContent = board[e.dataset.indexNumber];
+        }); 
     }
 
     const createGame = () => {
@@ -158,7 +199,7 @@ const gameBoard = (() => {
             aiScore = -10;
             return aiScore + depth; 
         } 
-        if(playerScore === 0 && aiScore === 0) {
+        if(playerScore === 0 || aiScore === 0) {
             return 0;
         }
 
@@ -166,7 +207,7 @@ const gameBoard = (() => {
             let best = -Infinity;
             b.forEach((e,i) => {
                 if (e === '') {
-                    b[i] = 'X';
+                    b[i] = player1.mark;
                     let score = minimax(b,depth+1,false);
                     best = Math.max(best,score);
                     b[i] = '';
@@ -177,7 +218,7 @@ const gameBoard = (() => {
             let best = Infinity;
             b.forEach((e,i) => {
                 if (e === '') {
-                    b[i] = 'O';
+                    b[i] = player2.mark;
                     let score = minimax(b,depth+1,true);
                     best = Math.min(best,score);
                     b[i] = '';
@@ -193,7 +234,7 @@ const gameBoard = (() => {
 
         b.forEach(function(e,i) {
             if (e === '') {
-                b[i] = 'X';
+                b[i] = player1.mark;
                 let score = minimax(b,0,false);
                 b[i] = '';
                 if (score > bestVal) {
@@ -203,10 +244,7 @@ const gameBoard = (() => {
             }
         });
         console.log(`the value of the best move is ${bestVal}`)
-        // b[bestMove.i] = 'O';
-        player2.appendMark(bestMove);
-        console.log(bestMove)
-        return bestMove;
+        return player2.appendMark(bestMove);
     }
     
     const randomNum = () => {
@@ -219,62 +257,40 @@ const gameBoard = (() => {
         player2 = Player('bot','O');
         player1.turn = true;
         gameStatus.textContent = `${player1.name} turn`;
-        // function aiEasy() {
+        // function aiRandomPlay() {
         //     let randomIndex = randomNum();
         //     if(!gameOver && player2.turn && board.includes('')) {
         //         if(board[randomIndex] === '') {
-        //             console.log('entry clear');
         //             player2.appendMark(randomIndex);
-        //             player1.turn = true;
-        //             player2.turn = false;
-        //             gameStatus.textContent = `${player1.name} turn`;
-        //             player2.win = player2.checkForWinner();
+        //             player1Turn();
+        //             player2.confirmWinner();       
         //         } else if(!gameOver && board[randomIndex] !== '') {
-        //             console.log('not available');
-        //             aiPlay();
+        //             aiRandomPlay();
         //         }
         //     }
         // }
-        function aiPlay2() {
+        function aiSmartPlay() {
             if(!gameOver && player2.turn && board.includes('')) {
-                    findBestMove(board)
-                    player1.turn = true;
-                    player2.turn = false;
-                    gameStatus.textContent = `${player1.name} turn`;
-                    gameOver = false
-                    player2.checkForWinner();
+                findBestMove(board)
+                player1Turn();
+                player2.confirmWinner();
             }
         }
         selectBox.forEach((e,i) => {
             e.addEventListener("click", function(){  
                 if(!gameOver && player1.turn && board[i] === '') {
                     player1.appendMark(i);
-                    player1.turn = false;
-                    player2.turn = true;
+                    player2Turn();
                     gameStatus.textContent = `Awaiting ${player2.name}...`
-                    gameOver = false;
-                    player1.checkForWinner();
+                    player1.confirmWinner();
                     setTimeout(() => {
-                        aiPlay2();
+                        aiSmartPlay();
                     }, 600);
                 } 
             }); 
         });
         resetButton.addEventListener('click', () => {
-            board = [
-            '','','',
-            '','','',
-            '','',''
-            ];
-            gameOver = false
-            player1.turn = true
-            player1.win = false;
-            player2.win = false;
-            gameStatus.style.color = `white`
-            gameStatus.textContent = `${player1.name} turn`;
-            selectBox.forEach(e => {
-                e.firstChild.textContent = board[e.dataset.indexNumber];
-            }) 
+            resetBoard();
         });
     }
  
@@ -283,35 +299,22 @@ const gameBoard = (() => {
         player2 = Player(playerName2,'O');
         player1.turn = true;
         gameStatus.textContent = `${player1.name}'s turn`;
-        for (const box of selectBox) {
-            box.addEventListener("click", function(){  
-                if(!gameOver && player1.turn && board[box.dataset.indexNumber] === '') {
-                    player1.appendMark(box.dataset.indexNumber);
-                    player1.turn = false;
-                    player2.turn = true;
-                    gameStatus.textContent = `${player2.name}'s turn`;
-                    player1.checkForWinner();
-                } else if(!gameOver && player2.turn && board[box.dataset.indexNumber] === '') {
-                    player2.appendMark(box.dataset.indexNumber);
-                    player1.turn = true;
-                    player2.turn = false;
-                    gameStatus.textContent = `${player1.name}'s turn`;
-                    player2.checkForWinner();
+        selectBox.forEach((e,i) => {
+            e.addEventListener("click", function(){  
+                if(!gameOver && player1.turn && board[i] === '') {
+                    player1.appendMark(i);
+                    player2Turn();
+                    player1.confirmWinner();
+                } else if(!gameOver && player2.turn && board[i] === '') {
+                    player2.appendMark(i);
+                    player1Turn();
+                    player2.confirmWinner();
                 }
             }); 
-            resetButton.addEventListener('click', () => {
-                board = [
-                '','','',
-                '','','',
-                '','',''
-                ];
-                gameOver = false;
-                player1.turn = true;
-                gameStatus.style.color = `white`;
-                gameStatus.textContent = `${player1.name}'s turn`;
-                box.firstChild.textContent = board[box.dataset.indexNumber];
-            });
-        };
+        });
+        resetButton.addEventListener('click', () => {
+            resetBoard();
+        });
     };
 
     return {
