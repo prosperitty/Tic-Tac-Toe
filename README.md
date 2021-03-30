@@ -4,7 +4,19 @@
 A Tic Tac Toe App created with HTML/CSS and Javascript.
 
 ### Features
-Users may choose between two game modes, 2 player or ai mode. Also, before starting a game, users may add their name. Once a round has ended, the user may reset the gameboard by clicking the reset button. The current AI mode is unsophisticated and makes a random legal play. Creating a sophisticated AI with the minimax algorithm is a work in progress. 
+**The Unbeatable AI game mode is now Live!**
+
+- Users may choose between two game modes, 2 player or ai mode.
+- Users may add their name in 2 player mode. 
+- Once a round has ended, the user may reset the gameboard by clicking the reset button.
+- Users may switch game modes by refreshing the page.
+- The AI was created with the minimax algorithm.
+
+### Features to work on 
+
+- Add name in ai mode
+- Add a button to switch game modes
+- Add a way to switch marks in ai mode
 
 ### Objectives
 
