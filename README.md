@@ -29,4 +29,4 @@ A Tic Tac Toe App created with HTML/CSS and Javascript.
 
 [The Odin Project](https://www.theodinproject.com/courses/javascript/lessons/tic-tac-toe-javascript)
 
-[Live Demo](https://alex-lvl.github.io/Tic-Tac-Toe/)
+[Live Demo](https://prosperitty.github.io/Tic-Tac-Toe/)
